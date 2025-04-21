@@ -6,7 +6,8 @@
           <section class="results">
               <app-housing-location
               *ngFor="let housingLocation of filteredLocationList"
-                  [housingLocation]="housingLocation">
+              (onDelete)="deleteLocation($event,housingLocation.id)"
+              [housingLocation]="housingLocation">
              </app-housing-location>
          </section>
      </section>

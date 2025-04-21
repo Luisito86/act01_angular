@@ -4,32 +4,41 @@ import { HousingLocation } from '../housing-location';
 import { CommonModule } from '@angular/common';
 import { HousingService } from '../housing.service';
 
-  @Component({
-    selector: 'app-home',
-    imports: [CommonModule, HousingLocationComponent],
-    templateUrl: './home.component.html',
-    styleUrl: './home.component.css'
-  })
-  export class HomeComponent {
-    housingLocationList: HousingLocation[] = [];
-    housingService: HousingService = inject(HousingService);
-    filteredLocationList: HousingLocation[] = [];
+@Component({
+  selector: 'app-home',
+  imports: [CommonModule, HousingLocationComponent],
+  templateUrl: './home.component.html',
+  styleUrl: './home.component.css',
+})
+export class HomeComponent {
+  housingLocationList: HousingLocation[] = [];
+  housingService: HousingService = inject(HousingService);
+  filteredLocationList: HousingLocation[] = [];
 
-    constructor(){
-      this.housingService.getAllHousingLocation().then((housingLocationList: HousingLocation[]) => {
+  constructor() {
+    this.getLocations();
+  }
+  getLocations() {
+    this.housingService
+      .getAllHousingLocation()
+      .then((housingLocationList: HousingLocation[]) => {
         this.housingLocationList = housingLocationList;
         this.filteredLocationList = housingLocationList;
-      })
-    }
-
-    filterResults(text:string){
-      if (!text) {
-        this.filteredLocationList = this.housingLocationList;
-        return;
-      }
-      this.filteredLocationList = this.housingLocationList.filter((housingLocation) =>
-        housingLocation?.city.toLowerCase().includes(text.toLowerCase())
-      )
-    }
-
+      });
   }
+
+  filterResults(text: string) {
+    if (!text) {
+      this.filteredLocationList = this.housingLocationList;
+      return;
+    }
+    this.filteredLocationList = this.housingLocationList.filter(
+      (housingLocation) =>
+        housingLocation?.city.toLowerCase().includes(text.toLowerCase())
+    );
+  }
+  async deleteLocation(event: boolean, id: number) {
+    await this.housingService.deleteHousingLocationById(id);
+    this.getLocations();
+  }
+}
